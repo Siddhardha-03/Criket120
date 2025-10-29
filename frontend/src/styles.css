@@ -1,0 +1,13 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  transition: transform 0.2s ease-in-out;
+}
+
+.match-status-badge {
+  text-transform: capitalize;
+}
