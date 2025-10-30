@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import MatchList from '../components/MatchList';
+import LiveScores from '../components/LiveScores';
 import { fetchMatches } from '../api/api';
 
 const STATUS_FILTERS = [
   { label: 'All', value: 'all' },
-  { label: 'Live', value: 'live' },
   { label: 'Upcoming', value: 'upcoming' },
   { label: 'Completed', value: 'completed' }
 ];
@@ -23,7 +23,10 @@ function HomePage() {
         setError('');
         const status = statusFilter === 'all' ? undefined : statusFilter;
         const data = await fetchMatches(status);
-        setMatches(data);
+        const filtered = Array.isArray(data)
+          ? data.filter((match) => match.status !== 'live')
+          : [];
+        setMatches(filtered);
       } catch (err) {
         console.error('Failed to load matches', err);
         setError('Unable to load matches. Please try again later.');
@@ -74,6 +77,14 @@ function HomePage() {
           </div>
         </div>
       </div>
+
+      <section className="mt-4">
+        <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <h2 className="h4 mb-0">Live Matches</h2>
+          <span className="badge bg-danger text-uppercase">Auto refresh · 30s</span>
+        </div>
+        <LiveScores />
+      </section>
 
       <div className="mt-4">
         <div className="d-flex flex-wrap gap-2">

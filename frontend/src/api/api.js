@@ -13,4 +13,13 @@ export const fetchMatchById = (id) => {
   return api.get(`/matches/${id}`).then((res) => res.data);
 };
 
+export const fetchLiveMatches = () => {
+  return api.get('/live-matches').then((res) => res.data);
+};
+
+export const fetchLiveScore = (matchId, options = {}) => {
+  const { params } = options;
+  return api.get(`/live-score/${matchId}`, { params }).then((res) => res.data);
+};
+
 export default api;

@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 
 const matchRoutes = require('./routes/matchRoutes');
+const liveScoreRoutes = require('./routes/liveScoreRoutes');
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/matches', matchRoutes);
+app.use('/api', liveScoreRoutes);
 
 app.get('/', (req, res) => {
   res.send('Cricket Platform API is running');

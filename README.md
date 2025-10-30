@@ -6,6 +6,7 @@ Responsive full-stack web application for tracking cricket matches across upcomi
 
 - Match listing segmented by status with search and filtering
 - Detailed match view including scores, venue, winner, and player of the match
+- Live match ticker sourced from an open-source Cricket API with Cricbuzz scraping fallback (auto-refreshing)
 - RESTful API for CRUD operations on matches
 - Responsive UI built with Bootstrap 5 utility classes and grid system
 - Axios-based data fetching with configurable API base URL
@@ -13,6 +14,7 @@ Responsive full-stack web application for tracking cricket matches across upcomi
 ## Tech Stack
 
 - **Backend:** Node.js, Express, mysql2, dotenv, cors
+- **Backend Integrations:** Open-source cricket API (no key) with Cricbuzz scraping fallback via Axios
 - **Frontend:** React (create-react-app), React Router, Axios, Bootstrap 5
 - **Database:** MySQL 8.0
 
@@ -73,6 +75,7 @@ cricket-platform/
    DB_USER=root
    DB_PASSWORD=system
    DB_NAME=cricket_platform
+   CRICKET_API_SERVER=https://cricket-api.vercel.app
    ```
 3. Create the database and table:
    ```sql
@@ -137,12 +140,16 @@ cricket-platform/
 | POST   | `/api/matches`     | Create a new match              | `{ team1, team2, venue, match_date, status }`
 | PUT    | `/api/matches/:id` | Update match scores/details     | `{ status, score_team1, score_team2, winner, player_of_match }`
 | DELETE | `/api/matches/:id` | Delete a match                  | `id` path param|
+| GET    | `/api/live-matches` | Fetch IDs & titles for live matches (API or Cricbuzz fallback) | none |
+| GET    | `/api/live-score/:matchId` | Fetch detailed live score for given match | `matchId` path param|
 
 ## Development Notes
 
 - Bootstrap styles load via CDN in `frontend/public/index.html`; JS bundle is imported in `src/index.js`.
 - Axios client (`frontend/src/api/api.js`) exposes helper functions for match queries.
 - Ensure CORS policy allows your frontend origin if deploying separately.
+- Live scores component polls `/api/live-matches` and `/api/live-score/:id` every 30 seconds; Cricbuzz scraping provides fallback match IDs when the API lacks live data.
+- Extend or adjust polling interval via `REFRESH_INTERVAL` in `LiveScores.jsx` as needed.
 
 ## Future Enhancements
 

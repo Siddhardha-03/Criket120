@@ -11,3 +11,31 @@ body {
 .match-status-badge {
   text-transform: capitalize;
 }
+
+.text-sm {
+  font-size: 0.9rem;
+}
+
+.text-md {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.15rem;
+}
+
+@media (min-width: 768px) {
+  .text-md {
+    font-size: 1.05rem;
+  }
+
+  .text-lg {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .text-lg {
+    font-size: 1.35rem;
+  }
+}
