@@ -1,5 +1,5 @@
 {
-  "name": "cricket-backend",
+  "name": "backend",
   "version": "1.0.0",
   "description": "Express backend for Cricket match platform",
   "main": "server.js",
