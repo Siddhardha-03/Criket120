@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "cricket-backend",
   "version": "1.0.0",
   "description": "Express backend for Cricket match platform",
   "main": "server.js",
@@ -20,5 +20,9 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
+  },
+   "engines": {
+    "node": ">=18.0.0"
   }
 }
+
