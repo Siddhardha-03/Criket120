@@ -73,10 +73,14 @@ cricket-platform/
    DB_HOST=localhost
    DB_PORT=3306
    DB_USER=root
-   DB_PASSWORD=system
++   DB_PASSWORD=system
    DB_NAME=cricket_platform
    CRICKET_API_SERVER=https://cricket-api.vercel.app
+   DB_SSL=false
+   DB_SSL_REJECT_UNAUTHORIZED=false
+   DB_CONNECTION_LIMIT=10
    ```
+   Use `backend/.env.example` as a reference when provisioning new environments.
 3. Create the database and table:
    ```sql
    CREATE DATABASE IF NOT EXISTS cricket_platform;
@@ -119,6 +123,51 @@ cricket-platform/
    npm start
    ```
    The application runs at `http://localhost:3000`.
+
+## Deployment on Railway
+
+Railway is recommended for both the backend API and a managed MySQL instance. The React frontend can be hosted either via the Railway Static Site service or any CDN that serves the `frontend/build` directory.
+
+### 1. Database
+
+1. Create a **MySQL** service in Railway.
+2. Copy the automatically generated environment variables. Railway exposes them as `MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD`, and `MYSQLDATABASE`.
+
+### 2. Backend API Service
+
+1. Create a new **Node.js** service pointing to the `backend` directory.
+2. Set the "Start Command" to `npm start`. Dependencies are installed automatically from `backend/package.json`.
+3. In the service settings, add the following environment variables:
+   - `PORT=8080` (or another port; Railway will proxy to the public URL)
+   - `CRICKET_API_SERVER=https://cricket-api.vercel.app`
+   - `DATABASE_URL` – optional. If you prefer Railway’s single `DATABASE_URL`, paste it here; the backend will parse it automatically.
+   - Otherwise map the provided MySQL variables:
+     - `DB_HOST=${MYSQLHOST}`
+     - `DB_PORT=${MYSQLPORT}`
+     - `DB_USER=${MYSQLUSER}`
+     - `DB_PASSWORD=${MYSQLPASSWORD}`
+     - `DB_NAME=${MYSQLDATABASE}`
+   - `DB_SSL=true` (Railway’s shared MySQL instances require TLS.)
+   - `DB_SSL_REJECT_UNAUTHORIZED=false` (Railway certificates are self-signed.)
+
+4. Redeploy the backend after saving variables. Railway will expose a public URL such as `https://cricket-backend.up.railway.app`. Use this value when configuring the frontend.
+
+### 3. Frontend Static Site
+
+1. Build the production bundle locally or via CI:
+   ```powershell
+   cd frontend
+   npm install
+   npm run build
+   ```
+2. Deploy the `frontend/build` directory by creating a **Static Site** service in Railway (or upload to your preferred static host).
+3. Set `REACT_APP_API_BASE_URL` environment variable on the static host to the backend URL, for example:
+   ```env
+   REACT_APP_API_BASE_URL=https://cricket-backend.up.railway.app/api
+   ```
+4. Rebuild/redeploy to ensure the frontend bundle is generated with the correct API base URL.
+
+> **Tip:** For multi-environment setups, create `frontend/.env.production` files that define `REACT_APP_API_BASE_URL` before running `npm run build`.
 
 ## Available Scripts
 
