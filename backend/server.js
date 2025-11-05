@@ -18,6 +18,12 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
 
+// Ensure Express knows it's behind a proxy when deployed on platforms like Render/Vercel
+// so rate limiting and IP-based logic use the correct client address.
+if ((process.env.NODE_ENV || '').toLowerCase() === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Middleware
 app.use(helmet());
 app.use(cors({

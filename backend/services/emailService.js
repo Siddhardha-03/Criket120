@@ -5,13 +5,21 @@ const { v4: uuidv4 } = require('uuid');
 
 class EmailService {
   constructor() {
+    const port = Number(process.env.SMTP_PORT || 587);
+
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: process.env.SMTP_PORT || 587,
-      secure: process.env.SMTP_SECURE === 'true',
+      port,
+      secure: port === 465 ? true : process.env.SMTP_SECURE === 'true',
+      pool: process.env.SMTP_POOL === 'true',
+      connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT || 15000),
+      socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT || 15000),
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
+      },
+      tls: {
+        rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED !== 'false',
       },
     });
   }
