@@ -196,16 +196,27 @@ Railway is recommended for both the backend API and a managed MySQL instance. Th
 | GET    | `/api/live-matches` | Fetch IDs & titles for live matches (RapidAPI Cricbuzz with HTML fallback) | none |
 | GET    | `/api/live-score/:matchId` | Fetch detailed live score for given match | `matchId` path param|
 
+### Authentication Endpoints
+
+| Method | Endpoint | Description | Body / Params |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/register` | Register new user and send verification email | `{ email, password }` |
+| POST | `/api/auth/login` | Login verified user and receive JWT | `{ email, password }` |
+| GET  | `/api/auth/verify-email` | Verify email address using token from email | `?token=uuid` |
+| POST | `/api/auth/forgot-password` | Request password reset email | `{ email }` |
+| POST | `/api/auth/reset-password` | Set new password with valid reset token | `?token=uuid`, `{ newPassword }` |
+
 ## Development Notes
 
 - Bootstrap styles load via CDN in `frontend/public/index.html`; JS bundle is imported in `src/index.js`.
 - Axios client (`frontend/src/api/api.js`) exposes helper functions for match queries.
-- Ensure CORS policy allows your frontend origin if deploying separately.
+- Ensure CORS policy allows your frontend origin if deploying separately. Backend now applies Helmet, rate limiting, and CORS defaults to `FRONTEND_URL`.
+- Authentication flows require SMTP credentials and JWT secret configured in `.env` (see `backend/.env.example`).
 - Live scores component polls `/api/live-matches` and `/api/live-score/:id` every 30 seconds. Data is sourced from the RapidAPI "free-cricbuzz-cricket-api" when available, with Cricbuzz HTML scraping as a fallback.
 - Extend or adjust polling interval via `REFRESH_INTERVAL` in `LiveScores.jsx` as needed.
 
 ## Future Enhancements
 
-- Authentication layer for protected match management
+- Role-based authorization for protected match management
 - Admin dashboard for creating/updating matches via UI
 - Automated tests for API routes and React components

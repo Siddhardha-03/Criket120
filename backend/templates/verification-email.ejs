@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Verify Your Email</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .button { 
+      display: inline-block; 
+      padding: 10px 20px; 
+      background-color: #4CAF50; 
+      color: white; 
+      text-decoration: none; 
+      border-radius: 5px; 
+      margin: 20px 0;
+    }
+    .footer { 
+      margin-top: 30px; 
+      font-size: 12px; 
+      color: #777; 
+      border-top: 1px solid #eee; 
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Welcome to Cricket120!</h2>
+  <p>Hello <%= username %>,</p>
+  <p>Thank you for registering with Cricket120. Please verify your email address to complete your registration.</p>
+  
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="<%= verificationUrl %>" class="button">Verify Email Address</a>
+  </div>
+  
+  <p>Or copy and paste this link into your browser:</p>
+  <p><a href="<%= verificationUrl %>" style="word-break: break-all;"><%= verificationUrl %></a></p>
+  
+  <p>If you didn't create an account with us, please ignore this email.</p>
+  
+  <div class="footer">
+    <p>Best regards,<br>The Cricket120 Team</p>
+    <p>If you have any questions, please contact us at <a href="mailto:<%= supportEmail %>"><%= supportEmail %></a></p>
+  </div>
+</body>
+</html>
