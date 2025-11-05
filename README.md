@@ -75,7 +75,11 @@ cricket-platform/
    DB_USER=root
 +   DB_PASSWORD=system
    DB_NAME=cricket_platform
-   CRICKET_API_SERVER=https://cricket-api.vercel.app
+   CRICBUZZ_API_KEY=your_rapidapi_key
+   # Optional overrides (defaults shown below)
+   # CRICBUZZ_API_HOST=free-cricbuzz-cricket-api.p.rapidapi.com
+   # CRICBUZZ_API_BASE_URL=https://free-cricbuzz-cricket-api.p.rapidapi.com
+   # CRICKET_API_SERVER=https://cricket-api.vercel.app
    DB_SSL=false
    DB_SSL_REJECT_UNAUTHORIZED=false
    DB_CONNECTION_LIMIT=10
@@ -189,7 +193,7 @@ Railway is recommended for both the backend API and a managed MySQL instance. Th
 | POST   | `/api/matches`     | Create a new match              | `{ team1, team2, venue, match_date, status }`
 | PUT    | `/api/matches/:id` | Update match scores/details     | `{ status, score_team1, score_team2, winner, player_of_match }`
 | DELETE | `/api/matches/:id` | Delete a match                  | `id` path param|
-| GET    | `/api/live-matches` | Fetch IDs & titles for live matches (API or Cricbuzz fallback) | none |
+| GET    | `/api/live-matches` | Fetch IDs & titles for live matches (RapidAPI Cricbuzz with HTML fallback) | none |
 | GET    | `/api/live-score/:matchId` | Fetch detailed live score for given match | `matchId` path param|
 
 ## Development Notes
@@ -197,7 +201,7 @@ Railway is recommended for both the backend API and a managed MySQL instance. Th
 - Bootstrap styles load via CDN in `frontend/public/index.html`; JS bundle is imported in `src/index.js`.
 - Axios client (`frontend/src/api/api.js`) exposes helper functions for match queries.
 - Ensure CORS policy allows your frontend origin if deploying separately.
-- Live scores component polls `/api/live-matches` and `/api/live-score/:id` every 30 seconds; Cricbuzz scraping provides fallback match IDs when the API lacks live data.
+- Live scores component polls `/api/live-matches` and `/api/live-score/:id` every 30 seconds. Data is sourced from the RapidAPI "free-cricbuzz-cricket-api" when available, with Cricbuzz HTML scraping as a fallback.
 - Extend or adjust polling interval via `REFRESH_INTERVAL` in `LiveScores.jsx` as needed.
 
 ## Future Enhancements

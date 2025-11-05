@@ -12,6 +12,24 @@ function sanitizeSegment(value) {
   return value.replace(/\s+/g, ' ').trim();
 }
 
+function cleanScoreLabel(label) {
+  const cleaned = sanitizeSegment(label);
+  if (!cleaned) {
+    return '';
+  }
+
+  return cleaned.replace(/\s+score$/i, '').trim() || cleaned;
+}
+
+function cleanScoreValue(value) {
+  const cleaned = sanitizeSegment(value);
+  if (!cleaned) {
+    return '';
+  }
+
+  return cleaned.replace(/^[:\-\s]+/, '');
+}
+
 function extractTeamScoreLines(scoreText, title) {
   if (!scoreText) {
     return [];
@@ -229,14 +247,36 @@ function LiveScores() {
                         )}
                       </div>
                       {(() => {
-                        const teamLines = extractTeamScoreLines(card.details.score, card.title)
+                        const structuredLines = Array.isArray(card.details?.scoreLines)
+                          ? card.details.scoreLines
+                              .map((entry) => {
+                                if (!entry) return null;
+                                if (typeof entry === 'string') {
+                                  return scoreLineToEntry(entry);
+                                }
+                                const label = cleanScoreLabel(entry.label || entry.team || entry.name || entry.title);
+                                const value = cleanScoreValue(entry.value || entry.score || entry.run || entry.text);
+                                if (!label && !value) {
+                                  return null;
+                                }
+                                return {
+                                  label: label || 'Score',
+                                  value: value || ''
+                                };
+                              })
+                              .filter(Boolean)
+                          : [];
+
+                        const fallbackLines = extractTeamScoreLines(card.details.score, card.title)
                           .map(scoreLineToEntry)
                           .filter(Boolean);
 
-                        if (teamLines.length) {
+                        const displayLines = structuredLines.length ? structuredLines : fallbackLines;
+
+                        if (displayLines.length) {
                           return (
                             <ul className="list-unstyled mb-0">
-                              {teamLines.map((entry, index) => (
+                              {displayLines.map((entry, index) => (
                                 <li key={`${card.id}-score-${index}`} className="d-flex justify-content-between align-items-center text-sm py-1 border-bottom">
                                   <span className="fw-semibold text-wrap me-2">{entry.label}</span>
                                   <span className="fw-bold text-danger text-end">{entry.value || '—'}</span>
